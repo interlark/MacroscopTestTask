@@ -5,3 +5,6 @@
 Тесты в batch файле и скринкаст(*.mkv) прогона тестов.
 Задание можно посмотреть в doc.
 Писал под 140 toolkit, x64, Windows OS 10.
+
+## Tests
+[![Watch the video](https://github.com/interlark/MacroscopTestTask/raw/master/Tests/macroscop_test.preview.png)](https://github.com/interlark/MacroscopTestTask/raw/master/Tests/macroscop_test.mkv)
