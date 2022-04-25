@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-// все растры должны быть одного размера, иначе задача не будет иметь смысла
+// РІСЃРµ СЂР°СЃС‚СЂС‹ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РѕРґРЅРѕРіРѕ СЂР°Р·РјРµСЂР°, РёРЅР°С‡Рµ Р·Р°РґР°С‡Р° РЅРµ Р±СѓРґРµС‚ РёРјРµС‚СЊ СЃРјС‹СЃР»Р°
 bool scenesSameSizeTest(const std::vector<cv::Mat> &scenes)
 {
 	bool bTheSame = true;
@@ -19,7 +19,7 @@ bool scenesSameSizeTest(const std::vector<cv::Mat> &scenes)
 	return bTheSame;
 }
 
-// оверлей (with alpha)
+// РѕРІРµСЂР»РµР№ (with alpha)
 void overlayImage(const cv::Mat &background, const cv::Mat &foreground, cv::Mat &output, cv::Point2i location)
 {
 	background.copyTo(output);
@@ -109,10 +109,10 @@ cv::Scalar hsv2bgr(double h, double s, double v) // angle, percent, percent
 	return cv::Scalar(b_o * 255, g_o * 255, r_o * 255);
 }
 
-// Получить цвет фона можно разным путем, т.е. он однородный, после выделения с порогом можно взять любую точку вне контура.
-// Можно к-measure (2) [метод к-средний] кластеризации,
-// А можно попробовать просто проанализировать с определенной точностью hsv-гистограмму, выбрать макс. значение -> hsv -> bgr
-// чтобы не нагружать память, используем часть раскадровки, a лучше пусть будет первая раскадровка.
+// РџРѕР»СѓС‡РёС‚СЊ С†РІРµС‚ С„РѕРЅР° РјРѕР¶РЅРѕ СЂР°Р·РЅС‹Рј РїСѓС‚РµРј, С‚.Рµ. РѕРЅ РѕРґРЅРѕСЂРѕРґРЅС‹Р№, РїРѕСЃР»Рµ РІС‹РґРµР»РµРЅРёСЏ СЃ РїРѕСЂРѕРіРѕРј РјРѕР¶РЅРѕ РІР·СЏС‚СЊ Р»СЋР±СѓСЋ С‚РѕС‡РєСѓ РІРЅРµ РєРѕРЅС‚СѓСЂР°.
+// РњРѕР¶РЅРѕ Рє-measure (2) [РјРµС‚РѕРґ Рє-СЃСЂРµРґРЅРёР№] РєР»Р°СЃС‚РµСЂРёР·Р°С†РёРё,
+// Рђ РјРѕР¶РЅРѕ РїРѕРїСЂРѕР±РѕРІР°С‚СЊ РїСЂРѕСЃС‚Рѕ РїСЂРѕР°РЅР°Р»РёР·РёСЂРѕРІР°С‚СЊ СЃ РѕРїСЂРµРґРµР»РµРЅРЅРѕР№ С‚РѕС‡РЅРѕСЃС‚СЊСЋ hsv-РіРёСЃС‚РѕРіСЂР°РјРјСѓ, РІС‹Р±СЂР°С‚СЊ РјР°РєСЃ. Р·РЅР°С‡РµРЅРёРµ -> hsv -> bgr
+// С‡С‚РѕР±С‹ РЅРµ РЅР°РіСЂСѓР¶Р°С‚СЊ РїР°РјСЏС‚СЊ, РёСЃРїРѕР»СЊР·СѓРµРј С‡Р°СЃС‚СЊ СЂР°СЃРєР°РґСЂРѕРІРєРё, a Р»СѓС‡С€Рµ РїСѓСЃС‚СЊ Р±СѓРґРµС‚ РїРµСЂРІР°СЏ СЂР°СЃРєР°РґСЂРѕРІРєР°.
 cv::Scalar GetDominantBGR(const std::vector<cv::Mat>& scenes)
 {
 	cv::Mat image_hsv;
@@ -161,7 +161,7 @@ cv::Scalar GetDominantBGR(const std::vector<cv::Mat>& scenes)
 	return hsv2bgr(hue /*0..360 degrees*/, ((double)saturation)/255 /*percentes: 0..1*/, ((double)value)/255 /*percentes: 0..1*/);
 }
 
-// преобразование координат линии (по заданию) в координаты opencv
+// РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ РєРѕРѕСЂРґРёРЅР°С‚ Р»РёРЅРёРё (РїРѕ Р·Р°РґР°РЅРёСЋ) РІ РєРѕРѕСЂРґРёРЅР°С‚С‹ opencv
 std::pair<cv::Point, cv::Point> projCoord(const std::pair<cv::Point2d, cv::Point2d>& line, const std::vector<cv::Mat>& scenes)
 {
 	int x1 = cvRound(line.first.x * scenes[0].cols);
@@ -173,7 +173,7 @@ std::pair<cv::Point, cv::Point> projCoord(const std::pair<cv::Point2d, cv::Point
 	return std::pair<cv::Point, cv::Point>(cv::Point(x1, y1), cv::Point(x2, y2));
 }
 
-// Определяем пересечение линий (сегментов)
+// РћРїСЂРµРґРµР»СЏРµРј РїРµСЂРµСЃРµС‡РµРЅРёРµ Р»РёРЅРёР№ (СЃРµРіРјРµРЅС‚РѕРІ)
 bool line_intersects(const cv::Point& p0, const cv::Point& p1, const cv::Point& p2, const cv::Point& p3, cv::Point* out = NULL)
 {
 	int s1_x, s1_y, s2_x, s2_y;
@@ -200,7 +200,7 @@ bool line_intersects(const cv::Point& p0, const cv::Point& p1, const cv::Point& 
 	return false;
 }
 
-//Определяем пересечение линии и rect
+//РћРїСЂРµРґРµР»СЏРµРј РїРµСЂРµСЃРµС‡РµРЅРёРµ Р»РёРЅРёРё Рё rect
 // LEFT = 2, BOTTOM = 4, RIGHT = 8, TOP = 16
 bool line_rect_inersect(const cv::Point& p0, const cv::Point& p1, const cv::Rect& bbox, int *num = 0)
 {
@@ -214,7 +214,7 @@ bool line_rect_inersect(const cv::Point& p0, const cv::Point& p1, const cv::Rect
 }
 
 
-// внутр. угол между 2 линиями
+// РІРЅСѓС‚СЂ. СѓРіРѕР» РјРµР¶РґСѓ 2 Р»РёРЅРёСЏРјРё
 double angleBetween2Lines(cv::Point line1Start, cv::Point line1End, cv::Point line2Start, cv::Point line2End) {
 	double x1 = line1Start.x - line1End.x;
 	double y1 = line1Start.y - line1End.y;
@@ -238,7 +238,7 @@ double angleBetween2Lines(cv::Point line1Start, cv::Point line1End, cv::Point li
 	return angle;
 }
 
-// все точки пересечения с контуром
+// РІСЃРµ С‚РѕС‡РєРё РїРµСЂРµСЃРµС‡РµРЅРёСЏ СЃ РєРѕРЅС‚СѓСЂРѕРј
 std::vector<cv::Point> getIntersectionPoints(const std::vector<cv::Point>& contour, const cv::Point& lineStart, const cv::Point& lineEnd) {
 	std::vector<cv::Point> result;
 	for (int i = 0; i < contour.size(); ++i) {
@@ -259,7 +259,7 @@ std::vector<cv::Point> getIntersectionPoints(const std::vector<cv::Point>& conto
 	return result;
 }
 
-// поиск сложного сечения
+// РїРѕРёСЃРє СЃР»РѕР¶РЅРѕРіРѕ СЃРµС‡РµРЅРёСЏ
 double findSection(const cv::Scalar& bg, const cv::Mat& obj, const cv::Point& loc, 
 						const cv::Point& lineStart, const cv::Point& lineEnd, const std::vector<cv::Mat>& scenes)
 {
@@ -352,7 +352,7 @@ int main(int argc, const char* argv[])
 	setlocale(LC_ALL, "Russian");
 
 	if (argc != 6) {
-		std::cerr << "Неверное колличество параметров. Пример: prog.exe \"fullpath_wildcard\" line_x1 line_y1 line_x2 line_y2, где line_* = [0..1]." << std::endl;
+		std::cerr << "РќРµРІРµСЂРЅРѕРµ РєРѕР»Р»РёС‡РµСЃС‚РІРѕ РїР°СЂР°РјРµС‚СЂРѕРІ. РџСЂРёРјРµСЂ: prog.exe \"fullpath_wildcard\" line_x1 line_y1 line_x2 line_y2, РіРґРµ line_* = [0..1]." << std::endl;
 		system("pause");
 		return -1;
 	}
@@ -365,21 +365,21 @@ int main(int argc, const char* argv[])
 		std::stringstream(input) >> lineCoordinates[i];
 	}
 
-	//загружаем scenes
+	//Р·Р°РіСЂСѓР¶Р°РµРј scenes
 	std::vector<cv::String> fn;
 	
 	cv::glob(path, fn, false);
 
 	if (fn.empty())
 	{
-		std::cerr << "По данному пути с wildcard не найденно подходящих раскадровок." << std::endl;
+		std::cerr << "РџРѕ РґР°РЅРЅРѕРјСѓ РїСѓС‚Рё СЃ wildcard РЅРµ РЅР°Р№РґРµРЅРЅРѕ РїРѕРґС…РѕРґСЏС‰РёС… СЂР°СЃРєР°РґСЂРѕРІРѕРє." << std::endl;
 		system("pause");
 		return -1;
 	}
 
 	if (fn.size() < 2)
 	{
-		std::cerr << "Раскадровок должно быть больше двух." << std::endl;
+		std::cerr << "Р Р°СЃРєР°РґСЂРѕРІРѕРє РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р±РѕР»СЊС€Рµ РґРІСѓС…." << std::endl;
 		system("pause");
 		return -1;
 	}
@@ -387,13 +387,13 @@ int main(int argc, const char* argv[])
 	for (int i = 0; i < 4; ++i) {
 		if (lineCoordinates[i] < .0 || lineCoordinates[i] > 1.0)
 		{
-			std::cerr << i + 1 <<"-ая координата линии имеет неверный формат [0.0 .. 1.0]" << std::endl;
+			std::cerr << i + 1 <<"-Р°СЏ РєРѕРѕСЂРґРёРЅР°С‚Р° Р»РёРЅРёРё РёРјРµРµС‚ РЅРµРІРµСЂРЅС‹Р№ С„РѕСЂРјР°С‚ [0.0 .. 1.0]" << std::endl;
 			system("pause");
 			return -1;
 		}
 	}
 
-	std::sort(fn.begin(), fn.end(), [](const cv::String& a, const cv::String& b) {return a < b; }); // по заданию, в папке упорядоченный набор кадров (ASC)
+	std::sort(fn.begin(), fn.end(), [](const cv::String& a, const cv::String& b) {return a < b; }); // РїРѕ Р·Р°РґР°РЅРёСЋ, РІ РїР°РїРєРµ СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹Р№ РЅР°Р±РѕСЂ РєР°РґСЂРѕРІ (ASC)
 	
 	std::vector<cv::Mat> scenes, scenes_grey;
 	std::for_each(fn.begin(), fn.end(), [&scenes, &scenes_grey](const cv::String& fn_img) { 
@@ -402,24 +402,24 @@ int main(int argc, const char* argv[])
 	});
 
 	if (!scenesSameSizeTest(scenes)) {
-		std::cerr << "Все раскадровки должны быть одинакового размера, иначе задача не имеет смысла." << std::endl;
+		std::cerr << "Р’СЃРµ СЂР°СЃРєР°РґСЂРѕРІРєРё РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ РѕРґРёРЅР°РєРѕРІРѕРіРѕ СЂР°Р·РјРµСЂР°, РёРЅР°С‡Рµ Р·Р°РґР°С‡Р° РЅРµ РёРјРµРµС‚ СЃРјС‹СЃР»Р°." << std::endl;
 		system("pause");
 		return -1;
 	}
 
-	// линия по заданию (x=0..1, y =0..1, точка (0,0) – левый нижний угол, точка (1, 1) – правый верхний угол кадра
+	// Р»РёРЅРёСЏ РїРѕ Р·Р°РґР°РЅРёСЋ (x=0..1, y =0..1, С‚РѕС‡РєР° (0,0) вЂ“ Р»РµРІС‹Р№ РЅРёР¶РЅРёР№ СѓРіРѕР», С‚РѕС‡РєР° (1, 1) вЂ“ РїСЂР°РІС‹Р№ РІРµСЂС…РЅРёР№ СѓРіРѕР» РєР°РґСЂР°
 	std::pair<cv::Point2d, cv::Point2d> input_line =
 			{ cv::Point2d(lineCoordinates[0],lineCoordinates[1]), cv::Point2d(lineCoordinates[2],lineCoordinates[3]) };
 	auto user_line = projCoord(input_line, scenes);
 
-	// Находим объект
-	// findContours принимает одноканальные изображения, так что конвертируем наши растры из 3-х каналов BGR
-	// не забываем что контур может быть сложным, но одним, используем hierarchy.
-	// находим максимальный S - будет контур, который поместился весь в кадре всей раскадровки. (иначе в раскадровке не было целого объекта никогда)
-	// не забываем что объект должен быть один и может выходить за границы раскадровки
-	// выводим наш контур на новое изображение с альфа каналом
-	// не забываем что объект может содержать несколько цветов и быть любой формы,
-	// в этом случае findContours может вернуть много контуров, надо выявить максимальный. И с каждым кадром работать только с максимальным контуром.
+	// РќР°С…РѕРґРёРј РѕР±СЉРµРєС‚
+	// findContours РїСЂРёРЅРёРјР°РµС‚ РѕРґРЅРѕРєР°РЅР°Р»СЊРЅС‹Рµ РёР·РѕР±СЂР°Р¶РµРЅРёСЏ, С‚Р°Рє С‡С‚Рѕ РєРѕРЅРІРµСЂС‚РёСЂСѓРµРј РЅР°С€Рё СЂР°СЃС‚СЂС‹ РёР· 3-С… РєР°РЅР°Р»РѕРІ BGR
+	// РЅРµ Р·Р°Р±С‹РІР°РµРј С‡С‚Рѕ РєРѕРЅС‚СѓСЂ РјРѕР¶РµС‚ Р±С‹С‚СЊ СЃР»РѕР¶РЅС‹Рј, РЅРѕ РѕРґРЅРёРј, РёСЃРїРѕР»СЊР·СѓРµРј hierarchy.
+	// РЅР°С…РѕРґРёРј РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№ S - Р±СѓРґРµС‚ РєРѕРЅС‚СѓСЂ, РєРѕС‚РѕСЂС‹Р№ РїРѕРјРµСЃС‚РёР»СЃСЏ РІРµСЃСЊ РІ РєР°РґСЂРµ РІСЃРµР№ СЂР°СЃРєР°РґСЂРѕРІРєРё. (РёРЅР°С‡Рµ РІ СЂР°СЃРєР°РґСЂРѕРІРєРµ РЅРµ Р±С‹Р»Рѕ С†РµР»РѕРіРѕ РѕР±СЉРµРєС‚Р° РЅРёРєРѕРіРґР°)
+	// РЅРµ Р·Р°Р±С‹РІР°РµРј С‡С‚Рѕ РѕР±СЉРµРєС‚ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ РѕРґРёРЅ Рё РјРѕР¶РµС‚ РІС‹С…РѕРґРёС‚СЊ Р·Р° РіСЂР°РЅРёС†С‹ СЂР°СЃРєР°РґСЂРѕРІРєРё
+	// РІС‹РІРѕРґРёРј РЅР°С€ РєРѕРЅС‚СѓСЂ РЅР° РЅРѕРІРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ СЃ Р°Р»СЊС„Р° РєР°РЅР°Р»РѕРј
+	// РЅРµ Р·Р°Р±С‹РІР°РµРј С‡С‚Рѕ РѕР±СЉРµРєС‚ РјРѕР¶РµС‚ СЃРѕРґРµСЂР¶Р°С‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ С†РІРµС‚РѕРІ Рё Р±С‹С‚СЊ Р»СЋР±РѕР№ С„РѕСЂРјС‹,
+	// РІ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ findContours РјРѕР¶РµС‚ РІРµСЂРЅСѓС‚СЊ РјРЅРѕРіРѕ РєРѕРЅС‚СѓСЂРѕРІ, РЅР°РґРѕ РІС‹СЏРІРёС‚СЊ РјР°РєСЃРёРјР°Р»СЊРЅС‹Р№. Р СЃ РєР°Р¶РґС‹Рј РєР°РґСЂРѕРј СЂР°Р±РѕС‚Р°С‚СЊ С‚РѕР»СЊРєРѕ СЃ РјР°РєСЃРёРјР°Р»СЊРЅС‹Рј РєРѕРЅС‚СѓСЂРѕРј.
 
 	double g_area = 0;
 	int g_scene_i = 0;
@@ -435,7 +435,7 @@ int main(int argc, const char* argv[])
 		std::vector<std::vector<cv::Point>> contours;
 		std::vector<cv::Vec4i> hierarchy;
 
-		cv::threshold(img, tmp, 100, 255, CV_THRESH_TOZERO | CV_THRESH_OTSU); // средний порог // adaptive for interesting tests?
+		cv::threshold(img, tmp, 100, 255, CV_THRESH_TOZERO | CV_THRESH_OTSU); // СЃСЂРµРґРЅРёР№ РїРѕСЂРѕРі // adaptive for interesting tests?
 
 		cv::findContours(tmp, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 
@@ -462,7 +462,7 @@ int main(int argc, const char* argv[])
 		++g_i;
 	}
 
-	// на данном этапе у нас есть полноценный контур со средним порогом
+	// РЅР° РґР°РЅРЅРѕРј СЌС‚Р°РїРµ Сѓ РЅР°СЃ РµСЃС‚СЊ РїРѕР»РЅРѕС†РµРЅРЅС‹Р№ РєРѕРЅС‚СѓСЂ СЃРѕ СЃСЂРµРґРЅРёРј РїРѕСЂРѕРіРѕРј
 	cv::Mat alpha(scenes[g_scene_i].size(), CV_8UC1, cv::Scalar(0));
 	cv::Rect R = cv::boundingRect(g_contours[g_largest_contour_index]);
 	
@@ -475,32 +475,32 @@ int main(int argc, const char* argv[])
 	cv::Mat dst;
 	cv::merge(rgba, 4, dst);
 
-	//определяем цвет фона (а применим-ка тут метод поиска доминантного цвета в кадре раскадровки)
+	//РѕРїСЂРµРґРµР»СЏРµРј С†РІРµС‚ С„РѕРЅР° (Р° РїСЂРёРјРµРЅРёРј-РєР° С‚СѓС‚ РјРµС‚РѕРґ РїРѕРёСЃРєР° РґРѕРјРёРЅР°РЅС‚РЅРѕРіРѕ С†РІРµС‚Р° РІ РєР°РґСЂРµ СЂР°СЃРєР°РґСЂРѕРІРєРё)
 	cv::Scalar background = GetDominantBGR(scenes);
 
-	//делаем раскадровку 4-х канальной (+ альфа-канал)
+	//РґРµР»Р°РµРј СЂР°СЃРєР°РґСЂРѕРІРєСѓ 4-С… РєР°РЅР°Р»СЊРЅРѕР№ (+ Р°Р»СЊС„Р°-РєР°РЅР°Р»)
 	std::for_each(scenes.begin(), scenes.end(), [](cv::Mat& scene) { cv::cvtColor(scene, scene, CV_BGR2BGRA); });
 
-	// получили 4-х канальное изображение объекта в obj
+	// РїРѕР»СѓС‡РёР»Рё 4-С… РєР°РЅР°Р»СЊРЅРѕРµ РёР·РѕР±СЂР°Р¶РµРЅРёРµ РѕР±СЉРµРєС‚Р° РІ obj
 	// 4 channel obj
 	cv::Mat object = dst(cv::Rect(R.x, R.y, R.width, R.height));
 
-	// в итоге найден объект (object), маска, добавили в раскадровку альфа-канал, объект сам с альфа-каналом, написана функция оверлея с 4-м каналом.
-	// Время работы с траекторией. Алгоритм простой:
-	// Bouning rect объекта (object) у нас находится в R -> x,y,width, height
-	// Настало время вычисления по центероидам масс контуров траектории, построения мизансцены и покадровой анимации (восстановление расскадровки, если угодно)
+	// РІ РёС‚РѕРіРµ РЅР°Р№РґРµРЅ РѕР±СЉРµРєС‚ (object), РјР°СЃРєР°, РґРѕР±Р°РІРёР»Рё РІ СЂР°СЃРєР°РґСЂРѕРІРєСѓ Р°Р»СЊС„Р°-РєР°РЅР°Р», РѕР±СЉРµРєС‚ СЃР°Рј СЃ Р°Р»СЊС„Р°-РєР°РЅР°Р»РѕРј, РЅР°РїРёСЃР°РЅР° С„СѓРЅРєС†РёСЏ РѕРІРµСЂР»РµСЏ СЃ 4-Рј РєР°РЅР°Р»РѕРј.
+	// Р’СЂРµРјСЏ СЂР°Р±РѕС‚С‹ СЃ С‚СЂР°РµРєС‚РѕСЂРёРµР№. РђР»РіРѕСЂРёС‚Рј РїСЂРѕСЃС‚РѕР№:
+	// Bouning rect РѕР±СЉРµРєС‚Р° (object) Сѓ РЅР°СЃ РЅР°С…РѕРґРёС‚СЃСЏ РІ R -> x,y,width, height
+	// РќР°СЃС‚Р°Р»Рѕ РІСЂРµРјСЏ РІС‹С‡РёСЃР»РµРЅРёСЏ РїРѕ С†РµРЅС‚РµСЂРѕРёРґР°Рј РјР°СЃСЃ РєРѕРЅС‚СѓСЂРѕРІ С‚СЂР°РµРєС‚РѕСЂРёРё, РїРѕСЃС‚СЂРѕРµРЅРёСЏ РјРёР·Р°РЅСЃС†РµРЅС‹ Рё РїРѕРєР°РґСЂРѕРІРѕР№ Р°РЅРёРјР°С†РёРё (РІРѕСЃСЃС‚Р°РЅРѕРІР»РµРЅРёРµ СЂР°СЃСЃРєР°РґСЂРѕРІРєРё, РµСЃР»Рё СѓРіРѕРґРЅРѕ)
 
-	//траектория
+	//С‚СЂР°РµРєС‚РѕСЂРёСЏ
 	
-	//центероид объекта
+	//С†РµРЅС‚РµСЂРѕРёРґ РѕР±СЉРµРєС‚Р°
 	auto mu = cv::moments(g_contours[g_largest_contour_index]);
 	auto mc = cv::Point2i(cvRound(mu.m10 / mu.m00), cvRound(mu.m01 / mu.m00));
 	auto ulp = g_contours[g_largest_contour_index][0];
-	//найдем dx,dy относительно boundingRect контура. Относительные величины.
+	//РЅР°Р№РґРµРј dx,dy РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ boundingRect РєРѕРЅС‚СѓСЂР°. РћС‚РЅРѕСЃРёС‚РµР»СЊРЅС‹Рµ РІРµР»РёС‡РёРЅС‹.
 	auto cdx = mc.x - g_contours[g_largest_contour_index][0].x;
 	auto cdy = mc.y - g_contours[g_largest_contour_index][0].y;
 
-	// Теперь будет проще найти центр массы у любого контура
+	// РўРµРїРµСЂСЊ Р±СѓРґРµС‚ РїСЂРѕС‰Рµ РЅР°Р№С‚Рё С†РµРЅС‚СЂ РјР°СЃСЃС‹ Сѓ Р»СЋР±РѕРіРѕ РєРѕРЅС‚СѓСЂР°
 
 	std::vector<cv::Point> trajectory;
 
@@ -510,7 +510,7 @@ int main(int argc, const char* argv[])
 		std::vector<std::vector<cv::Point>> contours;
 		std::vector<cv::Vec4i> hierarchy;
 
-		cv::threshold(img, tmp, 100, 255, CV_THRESH_TOZERO | CV_THRESH_OTSU); // средний порог // adaptive for interesting tests?
+		cv::threshold(img, tmp, 100, 255, CV_THRESH_TOZERO | CV_THRESH_OTSU); // СЃСЂРµРґРЅРёР№ РїРѕСЂРѕРі // adaptive for interesting tests?
 
 		cv::findContours(tmp, contours, hierarchy, CV_RETR_CCOMP, CV_CHAIN_APPROX_SIMPLE);
 		int Idx = 0;
@@ -524,37 +524,37 @@ int main(int argc, const char* argv[])
 		}
 
 		// WARN:
-		// если в раскадрровке есть контур, пусть и сложный, то объемлющий будет в contours[0]
-		// findContours выдает иногда странные баги связанные с координатами, upperleft угол = (0,0), а он выдает (1,1)
-		// на других границах он тоже прибавляет пиксель, но внутри кадров считает координаты верно!!!!!!
-		// этот баг нужно исправлять opencv, но его природа ясна, на ЛЮБОЙ границе с кадром (у него w,h +1) на границу, внутри все в порядке. (даже для 1 всё контура)
-		// нужно попробовать потом opencv 2 последний на gcc, может там его нет.
+		// РµСЃР»Рё РІ СЂР°СЃРєР°РґСЂСЂРѕРІРєРµ РµСЃС‚СЊ РєРѕРЅС‚СѓСЂ, РїСѓСЃС‚СЊ Рё СЃР»РѕР¶РЅС‹Р№, С‚Рѕ РѕР±СЉРµРјР»СЋС‰РёР№ Р±СѓРґРµС‚ РІ contours[0]
+		// findContours РІС‹РґР°РµС‚ РёРЅРѕРіРґР° СЃС‚СЂР°РЅРЅС‹Рµ Р±Р°РіРё СЃРІСЏР·Р°РЅРЅС‹Рµ СЃ РєРѕРѕСЂРґРёРЅР°С‚Р°РјРё, upperleft СѓРіРѕР» = (0,0), Р° РѕРЅ РІС‹РґР°РµС‚ (1,1)
+		// РЅР° РґСЂСѓРіРёС… РіСЂР°РЅРёС†Р°С… РѕРЅ С‚РѕР¶Рµ РїСЂРёР±Р°РІР»СЏРµС‚ РїРёРєСЃРµР»СЊ, РЅРѕ РІРЅСѓС‚СЂРё РєР°РґСЂРѕРІ СЃС‡РёС‚Р°РµС‚ РєРѕРѕСЂРґРёРЅР°С‚С‹ РІРµСЂРЅРѕ!!!!!!
+		// СЌС‚РѕС‚ Р±Р°Рі РЅСѓР¶РЅРѕ РёСЃРїСЂР°РІР»СЏС‚СЊ opencv, РЅРѕ РµРіРѕ РїСЂРёСЂРѕРґР° СЏСЃРЅР°, РЅР° Р›Р®Р‘РћР™ РіСЂР°РЅРёС†Рµ СЃ РєР°РґСЂРѕРј (Сѓ РЅРµРіРѕ w,h +1) РЅР° РіСЂР°РЅРёС†Сѓ, РІРЅСѓС‚СЂРё РІСЃРµ РІ РїРѕСЂСЏРґРєРµ. (РґР°Р¶Рµ РґР»СЏ 1 РІСЃС‘ РєРѕРЅС‚СѓСЂР°)
+		// РЅСѓР¶РЅРѕ РїРѕРїСЂРѕР±РѕРІР°С‚СЊ РїРѕС‚РѕРј opencv 2 РїРѕСЃР»РµРґРЅРёР№ РЅР° gcc, РјРѕР¶РµС‚ С‚Р°Рј РµРіРѕ РЅРµС‚.
 		if (contours.size())
 		{
 			auto& outerCountur = contours[Idx];
-			// контур может быть за пределами раскадровки, будем искать его координаты
+			// РєРѕРЅС‚СѓСЂ РјРѕР¶РµС‚ Р±С‹С‚СЊ Р·Р° РїСЂРµРґРµР»Р°РјРё СЂР°СЃРєР°РґСЂРѕРІРєРё, Р±СѓРґРµРј РёСЃРєР°С‚СЊ РµРіРѕ РєРѕРѕСЂРґРёРЅР°С‚С‹
 			cv::Rect RO = cv::boundingRect(outerCountur);
 			int x(0), y(0);
-			if (RO.height != R.height && RO.width != R.width) // углы
+			if (RO.height != R.height && RO.width != R.width) // СѓРіР»С‹
 			{
-				if (RO.x == 0 && RO.y == 0) { // левый вверхний угол
+				if (RO.x == 0 && RO.y == 0) { // Р»РµРІС‹Р№ РІРІРµСЂС…РЅРёР№ СѓРіРѕР»
 					x = RO.width - R.width;
 					y = RO.height - R.height;
 				}
-				else if (RO.y == 0 && RO.x + R.width > img.cols) { // правый верхний угол
+				else if (RO.y == 0 && RO.x + R.width > img.cols) { // РїСЂР°РІС‹Р№ РІРµСЂС…РЅРёР№ СѓРіРѕР»
 					x = RO.x;
 					y = RO.height - R.height;
 				}
-				else if (RO.x == 0 && RO.y + R.height > img.rows) { // левый нижний угол
+				else if (RO.x == 0 && RO.y + R.height > img.rows) { // Р»РµРІС‹Р№ РЅРёР¶РЅРёР№ СѓРіРѕР»
 					x = RO.width - R.width;
 					y = RO.y;
 				}
-				else if (RO.x + R.width > img.cols && RO.y + R.height > img.rows) { // правый нижний угол
+				else if (RO.x + R.width > img.cols && RO.y + R.height > img.rows) { // РїСЂР°РІС‹Р№ РЅРёР¶РЅРёР№ СѓРіРѕР»
 					x = RO.x;
 					y = RO.y;
 				}
-				else { //пытаемся поправить баг, на левой границу он дает нам безобразную "картину"
-					// баг 1 пиксела, сюда попадем как раз из-за левой границы
+				else { //РїС‹С‚Р°РµРјСЃСЏ РїРѕРїСЂР°РІРёС‚СЊ Р±Р°Рі, РЅР° Р»РµРІРѕР№ РіСЂР°РЅРёС†Сѓ РѕРЅ РґР°РµС‚ РЅР°Рј Р±РµР·РѕР±СЂР°Р·РЅСѓСЋ "РєР°СЂС‚РёРЅСѓ"
+					// Р±Р°Рі 1 РїРёРєСЃРµР»Р°, СЃСЋРґР° РїРѕРїР°РґРµРј РєР°Рє СЂР°Р· РёР·-Р·Р° Р»РµРІРѕР№ РіСЂР°РЅРёС†С‹
 					x = RO.width - R.width;
 					if (RO.y == 1)
 						y = RO.height - R.height;
@@ -562,7 +562,7 @@ int main(int argc, const char* argv[])
 						y = RO.y;
 				}
 			}
-			else if (RO.height != R.height && (RO.y == 0 || RO.y < img.rows)) // TOP\BOTTOM + (защ. от неровной раскадровки)
+			else if (RO.height != R.height && (RO.y == 0 || RO.y < img.rows)) // TOP\BOTTOM + (Р·Р°С‰. РѕС‚ РЅРµСЂРѕРІРЅРѕР№ СЂР°СЃРєР°РґСЂРѕРІРєРё)
 			{
 				if (RO.y == 0) { // TOP
 					x = RO.x;
@@ -573,7 +573,7 @@ int main(int argc, const char* argv[])
 					y = RO.y;
 				}
 			}
-			else if (RO.width != R.width && (RO.x == 0 || RO.x < img.cols)) // LEFT\RIGHT + (защ. от неровной раскадровки)
+			else if (RO.width != R.width && (RO.x == 0 || RO.x < img.cols)) // LEFT\RIGHT + (Р·Р°С‰. РѕС‚ РЅРµСЂРѕРІРЅРѕР№ СЂР°СЃРєР°РґСЂРѕРІРєРё)
 			{
 				if (RO.x == 0) { // LEFT
 					x = RO.width - R.width;
@@ -584,13 +584,13 @@ int main(int argc, const char* argv[])
 					y = RO.y;
 				}
 				else {
-					//пытаемся поправить баг, на левой границу он дает нам безобразную "картину"
-					// баг 1 пиксела, сюда попадем как раз из-за левой границы
+					//РїС‹С‚Р°РµРјСЃСЏ РїРѕРїСЂР°РІРёС‚СЊ Р±Р°Рі, РЅР° Р»РµРІРѕР№ РіСЂР°РЅРёС†Сѓ РѕРЅ РґР°РµС‚ РЅР°Рј Р±РµР·РѕР±СЂР°Р·РЅСѓСЋ "РєР°СЂС‚РёРЅСѓ"
+					// Р±Р°Рі 1 РїРёРєСЃРµР»Р°, СЃСЋРґР° РїРѕРїР°РґРµРј РєР°Рє СЂР°Р· РёР·-Р·Р° Р»РµРІРѕР№ РіСЂР°РЅРёС†С‹
 					x = RO.width - R.width;
 					y = RO.y;
 				}
 			}
-			// а может быть и в пределах кадра
+			// Р° РјРѕР¶РµС‚ Р±С‹С‚СЊ Рё РІ РїСЂРµРґРµР»Р°С… РєР°РґСЂР°
 			else { // WITHIN
 				x = RO.x;
 				y = RO.y;
@@ -604,45 +604,45 @@ int main(int argc, const char* argv[])
 	}
 
 	if (trajectory.empty()) {
-		std::cerr << "При анализе раскадровок не получилось создать траекторию движения объекта. Убедитесь что на кадрах присутствует объект." << std::endl;
+		std::cerr << "РџСЂРё Р°РЅР°Р»РёР·Рµ СЂР°СЃРєР°РґСЂРѕРІРѕРє РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ СЃРѕР·РґР°С‚СЊ С‚СЂР°РµРєС‚РѕСЂРёСЋ РґРІРёР¶РµРЅРёСЏ РѕР±СЉРµРєС‚Р°. РЈР±РµРґРёС‚РµСЃСЊ С‡С‚Рѕ РЅР° РєР°РґСЂР°С… РїСЂРёСЃСѓС‚СЃС‚РІСѓРµС‚ РѕР±СЉРµРєС‚." << std::endl;
 		system("pause");
 		return -1;
 	}
 
-	//построили траекторию в trajectory
+	//РїРѕСЃС‚СЂРѕРёР»Рё С‚СЂР°РµРєС‚РѕСЂРёСЋ РІ trajectory
 	const cv::Point *pts = (const cv::Point*) cv::Mat(trajectory).data;
 	int npts = cv::Mat(trajectory).rows;
 
-	//время построения мизансцены
+	//РІСЂРµРјСЏ РїРѕСЃС‚СЂРѕРµРЅРёСЏ РјРёР·Р°РЅСЃС†РµРЅС‹
 
 	cv::Mat canvas(scenes[0].size(), scenes[0].type(), background);
 	
-	//дабы видно было траекторию, нарисуем ее инвертированным цветом
+	//РґР°Р±С‹ РІРёРґРЅРѕ Р±С‹Р»Рѕ С‚СЂР°РµРєС‚РѕСЂРёСЋ, РЅР°СЂРёСЃСѓРµРј РµРµ РёРЅРІРµСЂС‚РёСЂРѕРІР°РЅРЅС‹Рј С†РІРµС‚РѕРј
 	cv::Scalar trajColor(255 - background.val[2], 255 - background.val[1], 255 - background.val[0]);
 	cv::polylines(canvas, &pts, &npts, 1, false, trajColor, /* colour RGB ordering */3, CV_AA, 0);
 	std::for_each(trajectory.begin(), trajectory.end(), [&canvas, &trajColor](const cv::Point& pnt){
 		circle(canvas, pnt, 5, trajColor, -1, CV_AA, 0);
 	});
 
-	//рисуем линию, нужно придумать контрастный цвет..хотя пусть будет тем же инвертированным
+	//СЂРёСЃСѓРµРј Р»РёРЅРёСЋ, РЅСѓР¶РЅРѕ РїСЂРёРґСѓРјР°С‚СЊ РєРѕРЅС‚СЂР°СЃС‚РЅС‹Р№ С†РІРµС‚..С…РѕС‚СЏ РїСѓСЃС‚СЊ Р±СѓРґРµС‚ С‚РµРј Р¶Рµ РёРЅРІРµСЂС‚РёСЂРѕРІР°РЅРЅС‹Рј
 	cv::line(canvas, user_line.first, user_line.second, trajColor, 2, CV_AA, 0);
 
-	//мизансцена готова, приступим к вычислениям углов между тректорией и линией если есть хоть одно пересечение, два итд.
+	//РјРёР·Р°РЅСЃС†РµРЅР° РіРѕС‚РѕРІР°, РїСЂРёСЃС‚СѓРїРёРј Рє РІС‹С‡РёСЃР»РµРЅРёСЏРј СѓРіР»РѕРІ РјРµР¶РґСѓ С‚СЂРµРєС‚РѕСЂРёРµР№ Рё Р»РёРЅРёРµР№ РµСЃР»Рё РµСЃС‚СЊ С…РѕС‚СЊ РѕРґРЅРѕ РїРµСЂРµСЃРµС‡РµРЅРёРµ, РґРІР° РёС‚Рґ.
 	for (int i = 0; i < trajectory.size() - 1; ++i) {
 		cv::Point out;
 		if (line_intersects(user_line.first, user_line.second, trajectory[i], trajectory[i + 1], &out)) {
 			double angle = angleBetween2Lines(user_line.first, user_line.second, trajectory[i], trajectory[i + 1]);
-			std::cout << "Найдено пересечение пользовательской линии и траектории под углом: " << angle << " градусов в точке " << out << "." << std::endl;
+			std::cout << "РќР°Р№РґРµРЅРѕ РїРµСЂРµСЃРµС‡РµРЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРѕР№ Р»РёРЅРёРё Рё С‚СЂР°РµРєС‚РѕСЂРёРё РїРѕРґ СѓРіР»РѕРј: " << angle << " РіСЂР°РґСѓСЃРѕРІ РІ С‚РѕС‡РєРµ " << out << "." << std::endl;
 		}
 	}
 
-	//Последний этап - анимация + вычисление максимального сечения
-	//анимировать будем рисуя фреймы контура на траектории
-	//вычислять позицию центероида на траектории будем алгоритмом Брезенхема
+	//РџРѕСЃР»РµРґРЅРёР№ СЌС‚Р°Рї - Р°РЅРёРјР°С†РёСЏ + РІС‹С‡РёСЃР»РµРЅРёРµ РјР°РєСЃРёРјР°Р»СЊРЅРѕРіРѕ СЃРµС‡РµРЅРёСЏ
+	//Р°РЅРёРјРёСЂРѕРІР°С‚СЊ Р±СѓРґРµРј СЂРёСЃСѓСЏ С„СЂРµР№РјС‹ РєРѕРЅС‚СѓСЂР° РЅР° С‚СЂР°РµРєС‚РѕСЂРёРё
+	//РІС‹С‡РёСЃР»СЏС‚СЊ РїРѕР·РёС†РёСЋ С†РµРЅС‚РµСЂРѕРёРґР° РЅР° С‚СЂР°РµРєС‚РѕСЂРёРё Р±СѓРґРµРј Р°Р»РіРѕСЂРёС‚РјРѕРј Р‘СЂРµР·РµРЅС…РµРјР°
 	cv::namedWindow("Macroscop_Task", cv::WINDOW_AUTOSIZE);
 	bool stopAnimation = false;
 	double maxSection = .0;
-	std::cout << std::endl << "Поиск сечений ... " << std::endl;
+	std::cout << std::endl << "РџРѕРёСЃРє СЃРµС‡РµРЅРёР№ ... " << std::endl;
 	for (int i = 0; i < trajectory.size() - 1 && !stopAnimation; ++i) {
 		auto& currentLineP1 = trajectory[i];
 		auto& currentLineP2 = trajectory[i + 1];
@@ -664,7 +664,7 @@ int main(int argc, const char* argv[])
 				user_line.first, user_line.second, scenes);
 			if (currentSection)
 			{
-				std::cout << "Найдено сечение: " << currentSection << std::endl;
+				std::cout << "РќР°Р№РґРµРЅРѕ СЃРµС‡РµРЅРёРµ: " << currentSection << std::endl;
 				if (currentSection > maxSection) { maxSection = currentSection; }
 			}
 			cv::imshow("Macroscop_Task", frame);
@@ -710,7 +710,7 @@ int main(int argc, const char* argv[])
 		//}
 	}
 
-	std::cout << std::endl << "Максимальное сечение: " << maxSection << std::endl;
+	std::cout << std::endl << "РњР°РєСЃРёРјР°Р»СЊРЅРѕРµ СЃРµС‡РµРЅРёРµ: " << maxSection << std::endl;
 
 	cv::waitKey(0);
 	cv::destroyAllWindows();
